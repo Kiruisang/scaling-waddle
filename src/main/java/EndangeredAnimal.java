@@ -6,6 +6,7 @@ public class EndangeredAnimal extends Animal {
     private int id;
     private String health;
     private String age;
+
     public static final String TYPE = "Endangered";
 
 
@@ -13,6 +14,7 @@ public class EndangeredAnimal extends Animal {
         super(name);
         this.age = age;
        this.health = health;
+       this.type = TYPE;
     }
 
     public String getHealth() {
@@ -71,4 +73,24 @@ public class EndangeredAnimal extends Animal {
             return super.getId() == newEndangeredAnimal.id;
         }
     }
+    @Override
+    public boolean equals(Object otherAnimal) {
+        if (!(otherAnimal instanceof EndangeredAnimal)) {
+            return false;
+        } else {
+            EndangeredAnimal newAnimal = (EndangeredAnimal) otherAnimal;
+            return this.getName().equals(newAnimal.getName()) &&
+                    this.getHealth().equals(newAnimal.getHealth()) &&
+                    this.getAge().equals(newAnimal.getAge());
+        }
+    }
+    public static List<EndangeredAnimal> all() {
+        String sql = "SELECT * FROM animals WHERE type='endangered-animal';";
+        try(Connection con = DB.sql2o.open()) {
+            return con.createQuery(sql)
+                    .throwOnMappingFailure(false)
+                    .executeAndFetch(EndangeredAnimal.class);
+        }
+    }
+
 }
